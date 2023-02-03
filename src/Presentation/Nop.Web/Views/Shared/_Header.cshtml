@@ -1,0 +1,255 @@
+﻿
+    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HeaderBefore })
+  <div class="header-top  d-none d-lg-flex">
+       <div class="container">
+        <div class="header-left d-none d-xl-block">
+                 <div class="info-box info-box-icon-left p-0">
+                            <i class="icon-shipping text-primary"></i>
+
+                            <div class="info-box-content0">
+                                <h4 class="mb-0">FREE Express Shipping On Orders INR 450+</h4>
+                            </div><!-- End .info-box-content -->
+                        </div>
+            <div class="header-selectors-wrapper">
+                @await Component.InvokeAsync("TaxTypeSelector")
+                @await Component.InvokeAsync("CurrencySelector")
+                @await Component.InvokeAsync("LanguageSelector")
+                @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HeaderSelectors })
+            </div>
+        </div>
+        <div class="header-right header-dropdowns">
+             <div class="header-links-wrapper">
+                <div class="header-links text-body">
+                @await Component.InvokeAsync("HeaderLinks")
+                @await Component.InvokeAsync("FlyoutShoppingCart")
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HeaderMiddle })
+@*@await Html.PartialAsync("_GeoLocation",new GeoLocationCheck())*@
+
+<script>
+    let deliveryLocation = window.localStorage.getItem("addressName");
+    document.getElementById("deliveryLocation").innerHTML = deliveryLocation;
+    console.log("Delivery")
+    console.log("deliverylocation" + JSON.parse(deliveryLocation));
+</script>
+
+    <div class="header-middle sticky-header" data-sticky-options="{'mobile': true}">
+      
+        <div class="container">
+
+                <div class="header-left w-lg-max">
+                         <button class="mobile-menu-toggler text-primary mr-2" type="button">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <div class="logo">
+                           @await Component.InvokeAsync("Logo")
+                        </div>
+                        <div class="header-icon header-search header-search-inline header-search-category d-lg-block d-none text-right mt-0">
+                          @await Component.InvokeAsync("SearchBox")
+                        </div>
+                  </div>
+
+                        <div class="header-right">
+                
+                <a href="wishlist.html" class="header-icon position-relative d-lg-none mr-2 text-dark">
+                    <i class="icon-wishlist-2"></i>
+                    <span class="badge-circle">@T("Wishlist.HeaderQuantity")</span>
+                </a>
+    
+            <div class="header-user d-lg-flex align-items-center header-icon mr-0">
+                <i
+                        class="icon-user-2 mr-2"></i>
+                  <h6 class="font1 d-none d-lg-block mb-0"><span class="d-block text-body">Welcome</span><a
+                        href="@Url.RouteUrl("CustomerInfo")" class="font-weight-bold">@T("Account.MyAccount")@*@Model.CustomerName*@</a>
+                        
+                    </h6>
+               </div>
+ 
+      
+
+
+                  <div class="cart-dropdown-wrapper d-flex align-items-center">
+
+                            <div class="dropdown cart-dropdown">
+                                <a href="#" title="Cart" class="dropdown-toggle cart-toggle text-dark" role="button"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                    data-display="static">
+                                    <i class="icon-cart-thick"></i>
+                                    <span class=" cart-count badge-circle">@T("ShoppingCart.HeaderQuantity")</span>
+                                </a>
+
+                                <div class="cart-overlay"></div>
+
+                                <div class="dropdown-menu mobile-cart">
+                                    <a href="#" title="Close (Esc)" class="btn-close">×</a>
+
+                                    <div class="dropdownmenu-wrapper custom-scrollbar">
+                                        <div class="dropdown-cart-header">Shopping Cart</div>
+                                        <!-- End .dropdown-cart-header -->
+
+                                        <div class="dropdown-cart-products">
+                                            <div class="product">
+                                                <div class="product-details">
+                                                    <h4 class="product-title">
+                                                        <a href="demo35-product.html">Ultimate 3D Bluetooth Speaker</a>
+                                                    </h4>
+
+                                                    <span class="cart-product-info">
+                                                        <span class="cart-product-qty">1</span>
+                                                        × $99.00
+                                                    </span>
+                                                </div><!-- End .product-details -->
+
+                                                <figure class="product-image-container">
+                                                    <a href="demo35-product.html" class="product-image">
+                                                        <img src="assets/images/products/product-1.jpg" alt="product"
+                                                            width="80" height="80">
+                                                    </a>
+
+                                                    <a href="#" class="btn-remove"
+                                                        title="Remove Product"><span>×</span></a>
+                                                </figure>
+                                            </div><!-- End .product -->
+
+                                            <div class="product">
+                                                <div class="product-details">
+                                                    <h4 class="product-title">
+                                                        <a href="demo35-product.html">Brown Women Casual HandBag</a>
+                                                    </h4>
+
+                                                    <span class="cart-product-info">
+                                                        <span class="cart-product-qty">1</span>
+                                                        × $35.00
+                                                    </span>
+                                                </div><!-- End .product-details -->
+
+                                                <figure class="product-image-container">
+                                                    <a href="demo35-product.html" class="product-image">
+                                                        <img src="assets/images/products/product-2.jpg" alt="product"
+                                                            width="80" height="80">
+                                                    </a>
+
+                                                    <a href="#" class="btn-remove"
+                                                        title="Remove Product"><span>×</span></a>
+                                                </figure>
+                                            </div><!-- End .product -->
+
+                                            <div class="product">
+                                                <div class="product-details">
+                                                    <h4 class="product-title">
+                                                        <a href="demo35-product.html">Circled Ultimate 3D Speaker</a>
+                                                    </h4>
+
+                                                    <span class="cart-product-info">
+                                                        <span class="cart-product-qty">1</span>
+                                                        × $35.00
+                                                    </span>
+                                                </div><!-- End .product-details -->
+
+                                                <figure class="product-image-container">
+                                                    <a href="demo35-product.html" class="product-image">
+                                                        <img src="assets/images/products/product-3.jpg" alt="product"
+                                                            width="80" height="80">
+                                                    </a>
+                                                    <a href="#" class="btn-remove"
+                                                        title="Remove Product"><span>×</span></a>
+                                                </figure>
+                                            </div><!-- End .product -->
+                                        </div><!-- End .cart-product -->
+
+                                        <div class="dropdown-cart-total">
+                                            <span>SUBTOTAL:</span>
+
+                                            <span class="cart-total-price float-right">$134.00</span>
+                                        </div><!-- End .dropdown-cart-total -->
+
+                                        <div class="dropdown-cart-action">
+                                            <a href="cart.html" class="btn btn-gray btn-block view-cart">View
+                                                Cart</a>
+                                            <a href="checkout.html" class="btn btn-dark btn-block">Checkout</a>
+                                        </div><!-- End .dropdown-cart-total -->
+                                    </div><!-- End .dropdownmenu-wrapper -->
+                                </div><!-- End .dropdown-menu -->
+                            </div><!-- End .dropdown -->
+
+                            <span class="cart-subtotal font2 d-none d-sm-inline">Shopping Cart
+                                <span class="cart-price d-block font2">₹0.00</span>
+                            </span>
+                        </div>
+            </div>
+          </div>
+        </div>
+
+
+
+                 <div class="header-bottom sticky-header d-none d-lg-flex" data-sticky-options="{'mobile': false}">
+                 <div class="container">
+                      <div class="header-center w-100 ml-0">
+                           @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HeaderAfter })
+                      </div>
+                    </div>
+               </div>
+               <div class="mobile-menu-overlay"></div><!-- End .mobil-menu-overlay -->
+
+
+      <div class="mobile-menu-container">
+        <div class="mobile-menu-wrapper">
+            <span class="mobile-menu-close"><i class="fa fa-times"></i></span>
+            <nav class="mobile-nav">
+                <ul class="mobile-menu">
+                    <li><a href="">Latest Deals<span class="tip tip-hot">Hot!</span></a></li>
+                    <li>
+                        <a href="">Categories</a>
+                        <ul>
+                            <li><a href="">All lists goes here</a></li>
+                          
+                        </ul>
+                    </li>
+                </ul>
+                <ul class="mobile-menu account-panel">
+                    <li><a href="">My Account</a></li>
+                    <li><a href="">Contact Us</a></li>
+                    <li><a href="">Blog</a></li>
+                    <li><a href="">My Wishlist</a></li>
+                    <li><a href="">Cart</a></li>
+                    <li><a href="" class="login-link">Log In</a></li>
+                </ul>
+            </nav><!-- End .mobile-nav -->
+
+
+        </div><!-- End .mobile-menu-wrapper -->
+    </div><!-- End .mobile-menu-container -->
+
+     <div class="sticky-navbar">
+        <div class="sticky-info">
+            <a href="">
+                <i class="icon-home"></i>Home
+            </a>
+        </div>
+        <div class="sticky-info">
+            <a href="" class="">
+                <i class="icon-bars"></i>Categories
+            </a>
+        </div>
+        <div class="sticky-info">
+            <a href="" class="">
+                <i class="icon-wishlist-2"></i>Wishlist
+            </a>
+        </div>
+        <div class="sticky-info">
+            <a href="" class="">
+                <i class="icon-user-2"></i>Account
+            </a>
+        </div>
+        <div class="sticky-info">
+            <a href="" class="">
+                <i class="icon-shopping-cart position-relative">
+                    <span class="cart-count badge-circle">3</span>
+                </i>Cart
+            </a>
+        </div>
+    </div>

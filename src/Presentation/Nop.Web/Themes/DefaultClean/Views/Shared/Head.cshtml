@@ -1,0 +1,28 @@
+﻿@using Nop.Core
+@using Nop.Services.Helpers
+@using Nop.Web.Framework.UI
+@inject IThemeContext themeContext
+@inject IUserAgentHelper userAgentHelper
+@{
+    Layout ="";
+    var themeName = await themeContext.GetWorkingThemeNameAsync();
+    var supportRtl = await Html.ShouldUseRtlThemeAsync();
+
+
+
+     //add jQuery UI css file
+    NopHtml.AppendCssFileParts("~/lib_npm/jquery-ui-dist/jquery-ui.min.css");
+
+    //add main CSS file
+
+    NopHtml.AppendCssFileParts($"~/Themes/{themeName}/Content/vendor/simple-line-icons/css/simple-line-icons.min.css"); 
+    NopHtml.AppendCssFileParts($"~/Themes/{themeName}/Content/vendor/fontawesome-free/css/all.min.css");
+    NopHtml.AppendCssFileParts($"~/Themes/{themeName}/Content/css/mygroci.css");
+
+    //add main CSS file
+    NopHtml.AppendCssFileParts($"~/Themes/{themeName}/Content/css/styles{(supportRtl ? ".rtl" : "")}.css");
+
+
+    NopHtml.AppendCssFileParts($"~/lib_npm/bootstrap/css/bootstrap.min.css");
+
+}

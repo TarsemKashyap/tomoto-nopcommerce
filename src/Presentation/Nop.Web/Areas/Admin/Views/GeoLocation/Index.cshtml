@@ -1,0 +1,438 @@
+﻿@model GeoLocationModel
+
+@*<div>
+    <textarea name="" style="display: block;" id="polyCoordinate" cols="30" rows="10"></textarea>
+    <!-- <button style="width: 100%;" id="resetPolygon">Reset</button> -->
+</div>*@
+
+@if (Model.IsLoggedInAsVendor)
+{
+
+
+    <input id="input" type="text" placeholder="Search for location" />
+
+
+
+    <div>
+        <form method="post" enctype="multipart/form-data">
+            @*<div class="col-md-9">
+        <input   id="Latitude" type="text" readonly />
+        <input  id="Longitude" type="text" readonly />
+
+        </div>*@
+         <input hidden  id="City" type="text" readonly />
+         <input hidden  id="State" type="text" readonly />
+
+            <button class="btn btn-primary" id="btnCheck" type="button">@T("Location.Add")</button>
+
+            <p id="successMsg"></p>
+
+        </form>
+    </div>
+
+
+    <button class="btn btn-danger" id="resetPolygon">@T("Location.Reset")</button>
+
+@*    <a class="btn btn-primary" asp-action="List" asp-controller="Geolocation">@T("Location List")</a>*@
+
+
+
+    <div style="height: 100vh;" id="map1"></div>
+    <div id="infowindow-content">
+        <span id="place-name" class="title"></span><br />
+        <span id="place-address"></span>
+    </div>
+
+
+
+
+    <script>
+
+
+
+
+
+        var TrPoly = function () {
+            var poly;
+            var map;
+            var path;
+            var markers = [];
+            var polyPath = [];
+
+            this.initMap = function (el) {
+                map = new google.maps.Map(document.getElementById("map1"), {
+                    zoom: 7,
+                    center: { lat: 19.0759837, lng: 72.8776559 }
+                });
+
+
+                var samplePolyPath = [
+                    { lat: 19.0759837, lng: 72.8776559 },
+                    { lat: 19.0330488, lng: 73.0296625 },
+
+                ];
+                // Construct the polygon.
+                poly = new google.maps.Polygon({
+                    // paths: samplePolyPath,
+                    strokeColor: "#FF0000",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    fillColor: "#FF0000",
+                    fillOpacity: 0.35
+                });
+                poly.setMap(map);
+
+
+                const input = document.getElementById("input");
+
+                const options = {
+                    // fields: ["formatted_address", "geometry", "name"],
+                    // strictBounds: false,
+                    // types: ["establishment"],
+                };
+
+
+
+                const autocomplete = new google.maps.places.Autocomplete(input, options);
+
+                // Bind the map's bounds (viewport) property to the autocomplete object,
+                // so that the autocomplete requests use the current map bounds for the
+                // bounds option in the request.
+
+
+                const infowindow = new google.maps.InfoWindow();
+                const infowindowContent = document.getElementById("infowindow-content");
+
+                infowindow.setContent(infowindowContent);
+
+                const marker = new google.maps.Marker({
+                    map,
+                    anchorPoint: new google.maps.Point(0, -29),
+                });
+
+                autocomplete.addListener("place_changed", () => {
+                    infowindow.close();
+                    marker.setVisible(false);
+
+                    var place = autocomplete.getPlace();
+
+
+
+
+
+                    if (!place.geometry || !place.geometry.location) {
+                        // User entered the name of a Place that was not suggested and
+                        // pressed the Enter key, or the Place Details request failed.
+                        window.alert("No details available for input: '" + place.name + "'");
+                        return;
+                    }
+
+                    // If the place has a geometry, then present it on a map.
+                    if (place.geometry.viewport) {
+                        map.fitBounds(place.geometry.viewport);
+                    } else {
+                        map.setCenter(place.geometry.location);
+                        map.setZoom(17);
+                    }
+
+                    marker.setPosition(place.geometry.location);
+                    marker.setVisible(true);
+                    infowindowContent.children["place-name"].textContent = place.name;
+                    infowindowContent.children["place-address"].textContent = place.formatted_address;
+                    infowindow.open(map, marker);
+
+                    var lat = place.geometry.location.lat();
+                    //document.getElementById("Latitude").value = lat;
+                    var lng = place.geometry.location.lng();
+                    //document.getElementById("Longitude").value = lng;
+
+
+
+                    //var componentForm = {
+                    //    locality: 'short_name',
+                    //};
+                    //for (var i = 0; i < place.address_components.length; i++) {
+                    //    var addressType = place.address_components[i].types[0];
+                    //    if (componentForm[addressType]) {
+                    //        var val = place.address_components[i][componentForm[addressType]];
+                    //        document.getElementById("CityName").value = val;
+
+                    //    }
+                    //    for (var j = 0; j < place.address_components[i].types.length; j++) {
+                    //        if (place.address_components[i].types[j] == "postal_code") {
+                    //            console.log(place.address_components[i]);
+                    //            var postal = place.address_components[i].long_name;
+                    //            document.getElementById("Pincode").value = postal;
+
+                    //        }
+                    //    }
+
+
+                    //}
+
+
+
+                });
+
+
+
+
+
+
+
+
+
+                // Add a listener for the click event
+                map.addListener("click", addLatLng);
+
+                //for (var i = 0; i < samplePolyPath.length; i++) {
+                //    var latLng = { latLng: new google.maps.LatLng(samplePolyPath[i]) };
+                //    addLatLng(latLng);
+                //    console.log(latLng);
+                //}
+
+                // var latLng = { latLng: new google.maps.LatLng(samplePolyPath[0]) };
+                // console.log(latLng);
+                // console.log(latLng.latLng.lat());
+            }
+
+
+            function addLatLng(event) {
+
+                path = poly.getPath();
+
+
+               
+                var itemLocality;
+                  var itemLocality2;
+                var geocoder = new google.maps.Geocoder();
+                var lat = event.latLng.lat();
+                var lng = event.latLng.lng();
+                var latlng = new google.maps.LatLng(lat, lng);
+                geocoder.geocode({ latLng: latlng }, function (results, status) {
+
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        if (results[1]) {
+                            var arrAddress = results;
+                            console.log(results);
+                            $.each(arrAddress, function (i, address_component) {
+                                if (address_component.types[0] == "political") {
+                                    console.log("State: " + address_component.address_components[0].long_name);
+                                    itemLocality = address_component.address_components[0].long_name;
+                                   document.getElementById("State").value = itemLocality;
+
+                                }
+                                @* if (address_component.types[0] ==  "administrative_area_level_2") {
+                                    console.log("City: " + address_component.address_components[0].long_name);
+                                    itemLocality = address_component.address_components[0].long_name;
+                                   document.getElementById("State").value = itemLocality;
+
+                                }*@
+                                if (address_component.types[0] == "locality") {
+                                    console.log("City: " + address_component.address_components[0].long_name);
+                                    itemLocality2 = address_component.address_components[0].long_name;
+                                    document.getElementById("City").value = itemLocality2;
+
+                                }
+                            });
+                        }
+                    }
+
+
+                    var bb
+                    path.push(event.latLng);
+                    polyPath.push({
+                        lat: event.latLng.lat(),
+                        lng: event.latLng.lng(),
+                        state:itemLocality2,
+                        city:itemLocality,
+                    });
+
+                    //document.getElementById("Latitude").value = lat;
+
+                    //document.getElementById("Longitude").value = lng;
+
+
+                    $("#polyCoordinate").val(JSON.stringify(polyPath));
+                    callBack(polyPath);
+                    console.log(polyPath);
+
+                    var marker = new google.maps.Marker({
+                        position: event.latLng,
+                        // title: "#" + path.getLength(),
+                        draggable: true,
+                        map: map,
+                        id: Math.random()
+                    });
+
+
+                    markers.push(marker);
+
+
+
+
+                    marker.addListener("dblclick", deleteMarker);
+                });
+
+
+
+            }
+
+            function deleteMarker(event) {
+                this.setMap(null);
+                for (var i = 0; i < markers.length; i++) {
+                    if (markers[i].id === this.id) {
+                        markers.splice(i, 1);
+                        break;
+                    }
+                }
+
+                renderPoly();
+            }
+
+            function clearAllMarkers() {
+                for (var i = 0; i < markers.length; i++) {
+                    markers[i].setMap(null);
+                }
+                markers = [];
+            }
+
+            jQuery("#resetPolygon").on("click", function () {
+                polyPath = [];
+                jQuery("#polyCoordinate").val("");
+                poly.setPath([]);
+                clearAllMarkers();
+                document.getElementById("City").value = "";
+                 document.getElementById("State").value = "";
+            });
+
+            function renderPoly() {
+                poly.setPath([]);
+                path = poly.getPath();
+                polyPath = [];
+                for (var i = 0; i < markers.length; i++) {
+                    path.push(markers[i].position);
+                    polyPath.push({
+                        lat: markers[i].position.lat(),
+                        lng: markers[i].position.lng()
+                    });
+                }
+                jQuery("#polyCoordinate").val(JSON.stringify(polyPath));
+
+            }
+
+
+        }
+
+        var cc = new TrPoly;
+        console.log(cc);
+        cc.initMap('map1');
+
+    </script>
+    @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+
+    @functions
+    {
+    public string GetAntiXsrfRequestToken()
+    {
+        return Xsrf.GetAndStoreTokens(Context).RequestToken;
+    }
+}
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBwIMGwxQ2A51mtWFM_w3AkxsFaj7E0RxQ&libraries=places&callback=initMap"
+        async defer></script>
+
+    <script>
+        function Clear() {
+            jQuery("#Latitude").val("");
+            jQuery("#Longitude").val("");
+            jQuery("#Pincode").val("");
+            jQuery("#CityName").val("");
+
+        }
+
+
+        var latLngArray
+        function callBack(response) {
+            latLngArray = response
+            console.log(latLngArray)
+
+
+        }
+
+
+        console.log(latLngArray);
+        $("#btnCheck").click(function (evt) {
+
+            $.ajax({
+                headers: { "RequestVerificationToken": "@GetAntiXsrfRequestToken()" },
+
+                type: "POST",
+                url: "@( Url.Action("AddLocation", "GeoLocation"))",
+                data: { latLngArray: latLngArray },
+
+                datatype: 'json',
+                success: function (response) {
+
+                    if (response.success) {
+
+                        alert('@T("Location Added SuccessFully")')
+                        Clear()
+                        latLngArray = [];
+
+                    }
+                    else {
+
+                        alert('@T("Something Went wrong... Please Reset and add Location")')
+                    }
+
+                },
+                error: function (err) {
+                    alert(err.statusText)
+                }
+            });
+
+            evt.preventDefault();
+        });
+
+
+        $("#input").on("input", function () {
+
+            document.getElementById("successMsg").innerHTML = "";
+        });
+
+
+            //function validate() {
+            //    var isValid = true;
+
+            //    var country = document.getElementById("input");
+            //    if (country.value == 0) {
+            //        document.getElementById("successMsg").innerHTML = "@T("Please enter Location")";
+            //        $('#successMsg').css('color', 'Red');
+            //        isValid = false;
+            //    }
+
+
+
+            //    return isValid;
+            //}
+    </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+else {
+    @T("Please click on this link") <a asp-action="list" asp-controller="vendor">Click</a>
+
+}
+

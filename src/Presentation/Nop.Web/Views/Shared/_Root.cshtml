@@ -1,0 +1,121 @@
+﻿@{
+    Layout = "_Root.Head";
+}
+@await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.BodyStartHtmlTagAfter })
+@{ await Html.RenderPartialAsync("_Notifications"); }
+@{ await Html.RenderPartialAsync("_JavaScriptDisabledWarning"); }
+@{ await Html.RenderPartialAsync("_OldInternetExplorerWarning"); }
+<div class="page-wrapper bg-gray">
+   <header>
+    @await Component.InvokeAsync("AdminHeaderLinks")
+    @{ await Html.RenderPartialAsync("_Header"); }
+    <script asp-location="Footer">
+        var localized_data = {
+            AjaxCartFailure: "@T("AjaxCart.Failure")"
+        };
+        AjaxCart.init(false, '.header-links .cart-qty', '.header-links .wishlist-qty', '#flyout-cart', localized_data);
+    </script>
+        <div class="header-bottom sticky-header d-none d-lg-flex" data-sticky-options="{'mobile': false}">
+            <div class="container">
+                <div class="header-center w-100 ml-0">
+                  @await Component.InvokeAsync("TopMenu")
+            </div>
+        </div>
+    </div>
+    </header>
+    <div class="main  bg-gray">
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ContentBefore })
+
+        @if (IsSectionDefined("Breadcrumb"))
+        {
+            @RenderSection("Breadcrumb") 
+        }
+        <div class="master-column-wrapper">
+            @RenderBody()
+        </div>
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ContentAfter })
+    </div>
+    @await Component.InvokeAsync("Footer")
+</div>
+@await Component.InvokeAsync("EuCookieLaw")
+@await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.BodyEndHtmlTagBefore })
+<div id="Novendorproduct-window" class="modal fade productInfo_alert" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">@T("Admin.Common.ReplaceCartItems?")</h4>
+                <button type="button" class="close" data-dismiss="modal" id="CloseVendor" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="form-horizontal">
+                <div class="modal-body">
+
+                </div>
+                <div  class="modal-footer">
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+
+    .stack_position .header,
+    .stack_position .header-menu {
+        z-index: 0 !important;
+    }
+
+    #Novendorproduct-window {
+        background: rgba(0,0,0,0.7);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 999;
+    }
+
+    .Show_popup {
+        display: flex !important;
+        opacity:1 !important;
+    }
+
+    #Novendorproduct-window .modal-dialog {
+       /* background: #fff;*/
+        padding: 25px;
+        max-width: 800px;
+        margin: 0 auto;
+        width: 500px;
+    }
+
+    #Novendorproduct-window .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        #Novendorproduct-window .modal-header button {
+            background: transparent;
+            border: 0;
+            padding: 0;
+            font-size: 27px;
+        }
+
+    #Novendorproduct-window .modal-footer {
+        text-align: center;
+        margin-top: 30px;
+    }
+
+        #Novendorproduct-window .modal-footer button {
+            border: none;
+            padding: 8px 25px;
+            background-color: #4ab2f1;
+            color: #fff;
+            text-transform: capitalize;
+            font-size: 15px;
+        }
+</style>
+
+
